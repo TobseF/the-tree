@@ -17,7 +17,8 @@ buildscript {
 apply<KorgeGradlePlugin>()
 
 korge {
-	id = "de.tfr.example.game.bomberman"
+	id = "de.tfr.example.game.tree"
+	name = "The Tree"
 	// To enable all targets at once
 
 	//targetAll()
