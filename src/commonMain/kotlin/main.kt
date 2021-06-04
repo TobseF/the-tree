@@ -1,8 +1,12 @@
 import com.soywiz.klock.milliseconds
+import com.soywiz.klock.seconds
 import com.soywiz.korau.sound.Sound
 import com.soywiz.korau.sound.readSound
 import com.soywiz.korge.*
+import com.soywiz.korge.input.onClick
 import com.soywiz.korge.time.delay
+import com.soywiz.korge.tween.get
+import com.soywiz.korge.tween.tween
 import com.soywiz.korge.view.*
 import com.soywiz.korge.view.filter.BlurFilter
 import com.soywiz.korim.bitmap.Bitmap
@@ -10,6 +14,8 @@ import com.soywiz.korim.color.Colors
 import com.soywiz.korim.format.*
 import com.soywiz.korio.async.launch
 import com.soywiz.korio.file.std.*
+import com.soywiz.korma.geom.degrees
+import com.soywiz.korma.interpolation.Easing
 import com.soywiz.korma.random.get
 import kotlin.random.Random
 
@@ -25,6 +31,7 @@ suspend fun main() = Korge(width = gameWidth, height = gameHeight, bgcolor = Col
 	val appleBitmap = resourcesVfs["apple.png"].readBitmap()
 	val birdBitmap = resourcesVfs["bird.png"].readBitmap()
 	val eatApple = resourcesVfs["apple_eat.mp3"].readSound()
+	val birdSound = resourcesVfs["bird_rip.mp3"].readSound()
 
 	image(backgroundBitmap) {
 		filter = BlurFilter(2.5)
@@ -47,7 +54,7 @@ suspend fun main() = Korge(width = gameWidth, height = gameHeight, bgcolor = Col
 
 	addApples(appleBitmap, tree)
 
-	Bird(birdBitmap, eatApple).addTo(this).startFlying()
+	Bird(birdBitmap, eatApple, birdSound).addTo(this).startFlying()
 }
 
 private fun addApples(appleBitmap: Bitmap, tree: Container) {
@@ -61,17 +68,22 @@ private fun addApples(appleBitmap: Bitmap, tree: Container) {
 	}
 }
 
-class Bird(birdSpriteSheet: Bitmap, val eatApple: Sound) :
+class Bird(birdSpriteSheet: Bitmap, val eatApple: Sound, val birdCry: Sound) :
 	Sprite(SpriteAnimation(birdSpriteSheet, spriteWidth = 126, spriteHeight = 122, columns = 4, rows = 2)) {
+
+	private var hit = false
 
 	init {
 		playAnimationLooped(spriteDisplayTime = 200.milliseconds)
 
 		onCollision(filter = { it is Image}) {
-			if (it.name == "apple") {
+			if (it.name == "apple" && !hit) {
 				it.removeFromParent()
 				eatApple()
 			}
+		}
+		onClick {
+			hit()
 		}
 	}
 
@@ -82,7 +94,7 @@ class Bird(birdSpriteSheet: Bitmap, val eatApple: Sound) :
 	}
 
 	suspend fun startFlying() {
-		while (true) {
+		while (!hit) {
 			x += 5
 			delay(20.milliseconds)
 			if (x > gameWidth) {
@@ -92,7 +104,22 @@ class Bird(birdSpriteSheet: Bitmap, val eatApple: Sound) :
 	}
 
 	private fun respawn() {
+		hit = false
+		rotation = 0.degrees
 		x = -50.0
 		y = Random[50.0, 500.0]
+	}
+
+	private suspend fun hit() {
+		birdCry.play()
+		hit = true
+		stage?.launch {
+			tween(this::y[gameHeight], time = 1.seconds, easing = Easing.EASE_IN)
+			respawn()
+			startFlying()
+		}
+		stage?.launch {
+			tween(this::rotation[Random[-40, 40].degrees], time = 100.milliseconds, easing = Easing.EASE_IN)
+		}
 	}
 }
