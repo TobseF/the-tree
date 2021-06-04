@@ -21,4 +21,13 @@ suspend fun main() = Korge(width = gameWidth, height = gameHeight, bgcolor = Col
 		size(gameWidth, gameHeight)
 	}
 
+	container {
+		name = "Happy Sun"
+		circle(radius = 50.0, fill = Colors.YELLOW)
+		circle(radius = 8.0, fill = Colors.BLACK).position(60, 20)
+		circle(radius = 8.0, fill = Colors.BLACK).position(24, 20)
+		circle(radius = 10.0, fill = Colors.RED).position(50, 60)
+		position(50, 50)
+	}
+
 }
