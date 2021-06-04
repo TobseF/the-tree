@@ -1,20 +1,23 @@
-import com.soywiz.klock.seconds
 import com.soywiz.korge.*
-import com.soywiz.korge.tween.*
 import com.soywiz.korge.view.*
 import com.soywiz.korge.view.filter.BlurFilter
+import com.soywiz.korim.bitmap.Bitmap
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.format.*
 import com.soywiz.korio.file.std.*
-import com.soywiz.korma.geom.degrees
-import com.soywiz.korma.interpolation.Easing
+import com.soywiz.korma.random.get
+import kotlin.random.Random
 
 val gameWidth = 540
 val gameHeight = 920
 
+var apples = 5
+
 suspend fun main() = Korge(width = gameWidth, height = gameHeight, bgcolor = Colors["#2b2b2b"]) {
 
 	val backgroundBitmap = resourcesVfs["background.png"].readBitmap()
+	val treeBitmap = resourcesVfs["tree.png"].readBitmap()
+	val appleBitmap = resourcesVfs["apple.png"].readBitmap()
 
 	image(backgroundBitmap) {
 		filter = BlurFilter(2.5)
@@ -30,4 +33,21 @@ suspend fun main() = Korge(width = gameWidth, height = gameHeight, bgcolor = Col
 		position(50, 50)
 	}
 
+	val tree = container {
+		image(treeBitmap)
+		centerOnStage()
+	}
+
+	addApples(appleBitmap, tree)
+}
+
+private fun addApples(appleBitmap: Bitmap, tree: Container) {
+	for (i in 0 until apples) {
+		val apple = Image(appleBitmap).apply {
+			name = "apple"
+			size(60, 60)
+			position(Random[5, 350], Random[5, 300])
+		}
+		tree.addChild(apple)
+	}
 }
