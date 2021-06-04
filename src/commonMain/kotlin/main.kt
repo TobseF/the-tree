@@ -1,4 +1,6 @@
 import com.soywiz.klock.milliseconds
+import com.soywiz.korau.sound.Sound
+import com.soywiz.korau.sound.readSound
 import com.soywiz.korge.*
 import com.soywiz.korge.time.delay
 import com.soywiz.korge.view.*
@@ -6,6 +8,7 @@ import com.soywiz.korge.view.filter.BlurFilter
 import com.soywiz.korim.bitmap.Bitmap
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.format.*
+import com.soywiz.korio.async.launch
 import com.soywiz.korio.file.std.*
 import com.soywiz.korma.random.get
 import kotlin.random.Random
@@ -21,6 +24,7 @@ suspend fun main() = Korge(width = gameWidth, height = gameHeight, bgcolor = Col
 	val treeBitmap = resourcesVfs["tree.png"].readBitmap()
 	val appleBitmap = resourcesVfs["apple.png"].readBitmap()
 	val birdBitmap = resourcesVfs["bird.png"].readBitmap()
+	val eatApple = resourcesVfs["apple_eat.mp3"].readSound()
 
 	image(backgroundBitmap) {
 		filter = BlurFilter(2.5)
@@ -43,7 +47,7 @@ suspend fun main() = Korge(width = gameWidth, height = gameHeight, bgcolor = Col
 
 	addApples(appleBitmap, tree)
 
-	Bird(birdBitmap).addTo(this).startFlying()
+	Bird(birdBitmap, eatApple).addTo(this).startFlying()
 }
 
 private fun addApples(appleBitmap: Bitmap, tree: Container) {
@@ -57,11 +61,24 @@ private fun addApples(appleBitmap: Bitmap, tree: Container) {
 	}
 }
 
-class Bird(birdSpriteSheet: Bitmap) :
+class Bird(birdSpriteSheet: Bitmap, val eatApple: Sound) :
 	Sprite(SpriteAnimation(birdSpriteSheet, spriteWidth = 126, spriteHeight = 122, columns = 4, rows = 2)) {
 
 	init {
 		playAnimationLooped(spriteDisplayTime = 200.milliseconds)
+
+		onCollision(filter = { it is Image}) {
+			if (it.name == "apple") {
+				it.removeFromParent()
+				eatApple()
+			}
+		}
+	}
+
+	private fun eatApple() {
+		stage?.launch {
+			eatApple.play()
+		}
 	}
 
 	suspend fun startFlying() {
