@@ -1,3 +1,4 @@
+import com.soywiz.klock.milliseconds
 import com.soywiz.korge.*
 import com.soywiz.korge.view.*
 import com.soywiz.korge.view.filter.BlurFilter
@@ -18,6 +19,7 @@ suspend fun main() = Korge(width = gameWidth, height = gameHeight, bgcolor = Col
 	val backgroundBitmap = resourcesVfs["background.png"].readBitmap()
 	val treeBitmap = resourcesVfs["tree.png"].readBitmap()
 	val appleBitmap = resourcesVfs["apple.png"].readBitmap()
+	val birdBitmap = resourcesVfs["bird.png"].readBitmap()
 
 	image(backgroundBitmap) {
 		filter = BlurFilter(2.5)
@@ -39,6 +41,8 @@ suspend fun main() = Korge(width = gameWidth, height = gameHeight, bgcolor = Col
 	}
 
 	addApples(appleBitmap, tree)
+
+	Bird(birdBitmap).addTo(this)
 }
 
 private fun addApples(appleBitmap: Bitmap, tree: Container) {
@@ -49,5 +53,13 @@ private fun addApples(appleBitmap: Bitmap, tree: Container) {
 			position(Random[5, 350], Random[5, 300])
 		}
 		tree.addChild(apple)
+	}
+}
+
+class Bird(birdSpriteSheet: Bitmap) :
+	Sprite(SpriteAnimation(birdSpriteSheet, spriteWidth = 126, spriteHeight = 122, columns = 4, rows = 2)) {
+
+	init {
+		playAnimationLooped(spriteDisplayTime = 200.milliseconds)
 	}
 }
