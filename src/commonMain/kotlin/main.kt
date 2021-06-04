@@ -1,5 +1,6 @@
 import com.soywiz.klock.milliseconds
 import com.soywiz.korge.*
+import com.soywiz.korge.time.delay
 import com.soywiz.korge.view.*
 import com.soywiz.korge.view.filter.BlurFilter
 import com.soywiz.korim.bitmap.Bitmap
@@ -42,7 +43,7 @@ suspend fun main() = Korge(width = gameWidth, height = gameHeight, bgcolor = Col
 
 	addApples(appleBitmap, tree)
 
-	Bird(birdBitmap).addTo(this)
+	Bird(birdBitmap).addTo(this).startFlying()
 }
 
 private fun addApples(appleBitmap: Bitmap, tree: Container) {
@@ -61,5 +62,20 @@ class Bird(birdSpriteSheet: Bitmap) :
 
 	init {
 		playAnimationLooped(spriteDisplayTime = 200.milliseconds)
+	}
+
+	suspend fun startFlying() {
+		while (true) {
+			x += 5
+			delay(20.milliseconds)
+			if (x > gameWidth) {
+				respawn()
+			}
+		}
+	}
+
+	private fun respawn() {
+		x = -50.0
+		y = Random[50.0, 500.0]
 	}
 }
