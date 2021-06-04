@@ -2,8 +2,10 @@ import com.soywiz.klock.milliseconds
 import com.soywiz.klock.seconds
 import com.soywiz.korau.sound.Sound
 import com.soywiz.korau.sound.readSound
+import com.soywiz.korev.Key
 import com.soywiz.korge.*
 import com.soywiz.korge.bus.GlobalBus
+import com.soywiz.korge.input.keys
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.time.delay
 import com.soywiz.korge.tween.get
@@ -43,6 +45,8 @@ suspend fun main() = Korge(width = gameWidth, height = gameHeight, bgcolor = Col
 	val birdBitmap = resourcesVfs["bird.png"].readBitmap()
 	val eatApple = resourcesVfs["apple_eat.mp3"].readSound()
 	val birdSound = resourcesVfs["bird_rip.mp3"].readSound()
+	val nutBitmap = resourcesVfs["nut.png"].readBitmap()
+	val squirrelBitmap = resourcesVfs["squirrel.png"].readBitmap()
 
 	image(backgroundBitmap) {
 		filter = BlurFilter(2.5)
@@ -64,6 +68,7 @@ suspend fun main() = Korge(width = gameWidth, height = gameHeight, bgcolor = Col
 	}
 	addApples(appleBitmap, tree)
 
+	Squirrel(squirrelBitmap, nutBitmap).addTo(this)
 	Score().addTo(this)
 
 	bus.register<GameOverEvent> {
@@ -98,10 +103,16 @@ class Bird(birdSpriteSheet: Bitmap, val eatApple: Sound, val birdCry: Sound) :
 	init {
 		playAnimationLooped(spriteDisplayTime = 200.milliseconds)
 
-		onCollision(filter = { it is Image}) {
-			if (it.name == "apple" && !hit) {
+		onCollision(filter = { it is Image && !hit}) {
+			if (it.name == "apple") {
 				it.removeFromParent()
 				eatApple()
+			}
+			if (it.name == "nut") {
+				it.removeFromParent()
+				stage?.launch {
+					hit()
+				}
 			}
 		}
 		onClick {
@@ -162,4 +173,40 @@ class Score : Container() {
 	fun count() {
 		scoreText.text = (++score).toString()
 	}
+}
+
+
+class Squirrel(bitmap: Bitmap, val nutBitmap: Bitmap) : BaseImage(bitmap) {
+
+	init {
+		position(100, gameHeight - 120)
+		keys {
+			down {
+				if (it.key == Key.LEFT) {
+					x -= 20
+				}
+				if (it.key == Key.RIGHT) {
+					x += 20
+				}
+				if (it.key == Key.SPACE) {
+					shoot()
+				}
+			}
+		}
+	}
+
+	fun shoot() = stage?.apply {
+		image(nutBitmap) {
+			name = "nut"
+			centerOn(this@Squirrel)
+			launch {
+				while (y > -height) {
+					y -= 10
+					delay(10.milliseconds)
+				}
+				removeFromParent()
+			}
+		}
+	}
+
 }
