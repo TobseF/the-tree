@@ -13,6 +13,7 @@ import com.soywiz.korge.view.filter.BlurFilter
 import com.soywiz.korim.bitmap.Bitmap
 import com.soywiz.korim.bitmap.effect.BitmapEffect
 import com.soywiz.korim.color.Colors
+import com.soywiz.korim.color.RGBA
 import com.soywiz.korim.font.DefaultTtfFont
 import com.soywiz.korim.font.toBitmapFont
 import com.soywiz.korim.format.*
@@ -64,10 +65,19 @@ suspend fun main() = Korge(width = gameWidth, height = gameHeight, bgcolor = Col
 	addApples(appleBitmap, tree)
 
 	Score().addTo(this)
+
+	bus.register<GameOverEvent> {
+		solidRect(0, 0, RGBA(Colors.BLACK.rgb, a = 120)) {
+			size(gameWidth, gameHeight)
+		}
+		text("Game Over", textSize = 64.0, font = font).centerOnStage()
+	}
+
 	Bird(birdBitmap, eatApple, birdSound).addTo(this).startFlying()
 }
 
 class HitBirdEvent()
+class GameOverEvent()
 
 private fun addApples(appleBitmap: Bitmap, tree: Container) {
 	for (i in 0 until apples) {
@@ -102,6 +112,10 @@ class Bird(birdSpriteSheet: Bitmap, val eatApple: Sound, val birdCry: Sound) :
 	private fun eatApple() {
 		stage?.launch {
 			eatApple.play()
+			apples--
+			if (apples == 0) {
+				bus.send(GameOverEvent())
+			}
 		}
 	}
 
