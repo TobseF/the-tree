@@ -3,6 +3,7 @@ import com.soywiz.klock.seconds
 import com.soywiz.korau.sound.Sound
 import com.soywiz.korau.sound.readSound
 import com.soywiz.korge.*
+import com.soywiz.korge.bus.GlobalBus
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.time.delay
 import com.soywiz.korge.tween.get
@@ -10,7 +11,10 @@ import com.soywiz.korge.tween.tween
 import com.soywiz.korge.view.*
 import com.soywiz.korge.view.filter.BlurFilter
 import com.soywiz.korim.bitmap.Bitmap
+import com.soywiz.korim.bitmap.effect.BitmapEffect
 import com.soywiz.korim.color.Colors
+import com.soywiz.korim.font.DefaultTtfFont
+import com.soywiz.korim.font.toBitmapFont
 import com.soywiz.korim.format.*
 import com.soywiz.korio.async.launch
 import com.soywiz.korio.file.std.*
@@ -23,6 +27,12 @@ val gameWidth = 540
 val gameHeight = 920
 
 var apples = 5
+
+val bus = GlobalBus()
+
+val font = DefaultTtfFont.toBitmapFont(
+	fontSize = 64.0, effect = BitmapEffect(dropShadowX = 2, dropShadowY = 2, dropShadowRadius = 1)
+)
 
 suspend fun main() = Korge(width = gameWidth, height = gameHeight, bgcolor = Colors["#2b2b2b"]) {
 
@@ -51,11 +61,13 @@ suspend fun main() = Korge(width = gameWidth, height = gameHeight, bgcolor = Col
 		image(treeBitmap)
 		centerOnStage()
 	}
-
 	addApples(appleBitmap, tree)
 
+	Score().addTo(this)
 	Bird(birdBitmap, eatApple, birdSound).addTo(this).startFlying()
 }
+
+class HitBirdEvent()
 
 private fun addApples(appleBitmap: Bitmap, tree: Container) {
 	for (i in 0 until apples) {
@@ -111,6 +123,7 @@ class Bird(birdSpriteSheet: Bitmap, val eatApple: Sound, val birdCry: Sound) :
 	}
 
 	private suspend fun hit() {
+		bus.send(HitBirdEvent())
 		birdCry.play()
 		hit = true
 		stage?.launch {
@@ -121,5 +134,18 @@ class Bird(birdSpriteSheet: Bitmap, val eatApple: Sound, val birdCry: Sound) :
 		stage?.launch {
 			tween(this::rotation[Random[-40, 40].degrees], time = 100.milliseconds, easing = Easing.EASE_IN)
 		}
+	}
+}
+
+class Score : Container() {
+	var score = 0
+	val scoreText: Text = text("0", font = font, textSize = 64.0).position(gameWidth - 80, 20)
+
+	init {
+		bus.register<HitBirdEvent> { count() }
+	}
+
+	fun count() {
+		scoreText.text = (++score).toString()
 	}
 }
