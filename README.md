@@ -11,18 +11,20 @@ There's an apple tree standing on the hill in Karlsruhe.
 But the angry birds want to steal our delicious fruits.
 Rescue our tree by shooting them all down.  
 
-## 🎮 Controls
+## ⌨ Controls
 Shoot the birds by clicking on them like in Moorhuhn.  
 In the [squirrel extension](https://github.com/TobseF/the-tree/tree/AddSquirrel), 
 you can use arrows and space to throw nuts on the bird.
 
-## 🛠 Setup 
+## 🎮 Web Launcher
+[![Run Tree Game](https://tobsef.github.io/the-tree/img/icon-s.png)](https://tobsef.github.io/the-tree/tree-game/)
+[![Run Squirrel Game](https://tobsef.github.io/the-tree/img/icon-squirrel-s.png)](https://tobsef.github.io/the-tree/tree-game-squirrel/)
 
-For Windows, change all the `./gradlew` for `gradlew.bat`.
-
+## 🛠 Setup
+For Windows, change all the `./gradlew` for `gradlew.bat`.  
 You should use Gradle 7.0.2 or greater and Java 8 or greater.
 
-Branch [AddSquirrel](https://github.com/TobseF/the-tree/tree/AddSquirrel)
+> 🥜 Branch [AddSquirrel](https://github.com/TobseF/the-tree/tree/AddSquirrel)
 contains the squirrel shooter extension.
 
 ## Compiling for the JVM (Desktop)
