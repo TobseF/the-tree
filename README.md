@@ -1,14 +1,29 @@
-# 🌳 The Tree Game
+# 🌳🍎 The Apple Tree Game
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.6.10-blue.svg?style=flat&logo=kotlin&logoColor=white)](http://kotlinlang.org)
 [![KorGE](https://img.shields.io/badge/KorGE-2.4.10-836DAC.svg)](https://korge.soywiz.com/)
 [![Gradle](https://img.shields.io/badge/Gradle-7.0.2-5AD6AB.svg?style=flat&logo=Gradle&logoColor=white)](http://kotlinlang.org)
+
+![Apple Tree Banner](https://repository-images.githubusercontent.com/372320977/6b1b8c7e-db40-4862-80b7-7f58e0308bf6)
 > A one file sample game for a [KorGE](https://korge.org) game workshop
+
+## 🌳 Story
+There's an apple tree standing on the hill in Karlsruhe. 
+But the angry birds want to steal our delicious fruits.
+Rescue our tree by shooting them all down.  
+
+## 🎮 Controls
+Shoot the birds by clicking on them like in Moorhuhn.  
+In the [squirrel extension](https://github.com/TobseF/the-tree/tree/AddSquirrel), 
+you can use arrows and space to throw nuts on the bird.
 
 ## 🛠 Setup 
 
 For Windows, change all the `./gradlew` for `gradlew.bat`.
 
 You should use Gradle 7.0.2 or greater and Java 8 or greater.
+
+Branch [AddSquirrel](https://github.com/TobseF/the-tree/tree/AddSquirrel)
+contains the squirrel shooter extension.
 
 ## Compiling for the JVM (Desktop)
 
