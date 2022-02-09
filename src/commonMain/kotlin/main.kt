@@ -137,6 +137,7 @@ class Bird(birdSpriteSheet: Bitmap, val eatApple: Sound, val birdCry: Sound) :
 	}
 
 	private suspend fun hit() {
+		if (hit) return
 		bus.send(HitBirdEvent())
 		birdCry.play()
 		hit = true
