@@ -20,6 +20,18 @@ you can use arrows and space to throw nuts on the bird.
 [![Run Tree Game](https://tobsef.github.io/the-tree/img/icon-s.png)](https://tobsef.github.io/the-tree/tree-game/)
 [![Run Squirrel Game](https://tobsef.github.io/the-tree/img/icon-squirrel-s.png)](https://tobsef.github.io/the-tree/tree-game-squirrel/)
 
+## 💿 Downloads
+
+### Windows
+📦 [The Tree - Win x64.zip](https://github.com/TobseF/the-tree/files/8177062/The.Tree.-.Win.x64.zip)
+📦 [The Tree [Squirrel ED] - Win x64.zip](https://github.com/TobseF/the-tree/files/8177056/The.Tree.Squirrel.ED.-.Win.x64.zip)
+> 💡 Native One Click Exe - No Java required
+
+### Platform independent
+📦 [The Tree - jvm.zip](https://github.com/TobseF/the-tree/files/8177058/The.Tree.-.jvm.zip)
+📦 [The Tree [Squirrel ED] - jvm.zip](https://github.com/TobseF/the-tree/files/8177065/The.Tree.Squirrel.ED.-.jvm.zip)
+>💡  Requires an installed [Java JRE](https://java.com/en/download/). Runs on Windows, Linux & Mac.
+
 ## 🛠 Setup
 For Windows, change all the `./gradlew` for `gradlew.bat`.  
 You should use Gradle 7.0.2 or greater and Java 8 or greater.
